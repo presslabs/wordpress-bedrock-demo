@@ -45,7 +45,8 @@
     "wpackagist-plugin/health-check": "^1.2",
     "wpackagist-plugin/debug-bar": "^1.0",
     "wpackagist-plugin/debug-bar-console":"~0.3",
-    "wpackagist-plugin/debug-bar-constants":"^2.0.0"
+    "wpackagist-plugin/debug-bar-constants":"^2.0.0",
+    "wpackagist-plugin/debug-bar-slow-actions": "^0.8.4"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "^3.0.2",
