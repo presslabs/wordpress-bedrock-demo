@@ -1,0 +1,20 @@
+# Application
+site/web/oem/*
+site/web/app/plugins/*
+!site/web/app/plugins/.gitkeep
+site/web/app/mu-plugins/*/
+!site/web/app/mu-plugins/*.php
+site/web/app/upgrade
+site/web/app/uploads/*
+!site/web/app/uploads/.gitkeep
+
+# WordPress
+site/web/wp
+site/web/.htaccess
+
+# Dotenv
+site/.env
+site/.env.*
+
+# Composer
+site/vendor

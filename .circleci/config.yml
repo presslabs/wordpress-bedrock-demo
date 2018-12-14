@@ -1,0 +1,18 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/php:7.2-node
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Login to quay.io
+          command: docker login -u "$DOCKER_USER" -p "$DOCKER_PASS" quay.io
+      - run:
+          name: Build docker images
+          command: make images IMAGE_TAGS="${CIRCLE_SHA1:0:6}"
+      - run:
+          name: Publish docker images
+          command: make publish IMAGE_TAGS="${CIRCLE_SHA1:0:6}"
