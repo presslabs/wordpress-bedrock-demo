@@ -16,3 +16,47 @@ jobs:
       - run:
           name: Publish docker images
           command: make publish IMAGE_TAGS="${CIRCLE_SHA1:0:6}"
+  deploy:
+    docker:
+      - image: google/cloud-sdk
+    environment:
+      - GOOGLE_COMPUTE_ZONE: "europe-west3-a"
+      - GOOGLE_COMPUTE_REGION: "europe-west3"
+      - GOOGLE_CLUSTER_NAME: "stack-demo"
+    steps:
+      - run:
+          name: Setup Google Cloud SDK
+          command: |
+            apt-get install -qq -y gettext
+            echo $GOOGLE_DEPLOY_KEY > ${HOME}/gcloud-service-key.json
+            gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+            gcloud --quiet config set project ${GCLOUD_PROJECT}
+            gcloud --quiet config set compute/zone ${GOOGLE_COMPUTE_ZONE}
+            gcloud --quiet container clusters get-credentials --region ${GOOGLE_COMPUTE_REGION} ${GOOGLE_CLUSTER_NAME}
+      - run:
+          name: Install Helm
+          command: |
+            curl -sL -o helm.tar.gz https://storage.googleapis.com/kubernetes-helm/helm-v2.11.0-linux-amd64.tar.gz
+            tar -C /usr/local/bin -xzvf helm.tar.gz --strip-components 1 linux-amd64/helm
+      - run:
+          name: Deploy site
+          command: |
+            echo "${GCS_MEDIA_KEY}" > google_credentials.json
+            helm upgrade -i bedrock presslabs/wordpress-site \
+              --set 'site.domains[0]=bedrock.35.246.190.75.nip.io' \
+              --set 'media.gcs.bucket=craftpeak-stack-demo' \
+              --set 'media.gcs.prefix=bedrock' \
+              --set 'image.repository=quay.io/presslabs/wordpress-bedrock-demo,image.tag=${CIRCLE_SHA1:0:6}' \
+              --set-file 'media.gcs.google_credentials=google_credentials.json'
+
+workflows:
+  version: 2
+  build_test_deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
