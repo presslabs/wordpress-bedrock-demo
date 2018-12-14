@@ -42,6 +42,9 @@ jobs:
           name: Deploy site
           command: |
             echo "${GCS_MEDIA_KEY}" > google_credentials.json
+            helm init --client-only
+            helm repo add presslabs https://presslabs.github.io/charts
+            helm repo update
             helm upgrade -i bedrock presslabs/wordpress-site \
               --set 'site.domains[0]=bedrock.35.246.190.75.nip.io' \
               --set 'media.gcs.bucket=craftpeak-stack-demo' \
