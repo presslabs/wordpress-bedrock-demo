@@ -46,11 +46,11 @@ jobs:
             helm repo add presslabs https://presslabs.github.io/charts
             helm repo update
             helm upgrade -i bedrock presslabs/wordpress-site \
-              --set 'site.domains[0]=bedrock.35.246.190.75.nip.io' \
-              --set 'media.gcs.bucket=craftpeak-stack-demo' \
-              --set 'media.gcs.prefix=bedrock' \
-              --set 'image.repository=quay.io/presslabs/wordpress-bedrock-demo,image.tag=${CIRCLE_SHA1:0:6}' \
-              --set-file 'media.gcs.google_credentials=google_credentials.json'
+              --set "site.domains[0]=bedrock.35.246.190.75.nip.io" \
+              --set "media.gcs.bucket=craftpeak-stack-demo" \
+              --set "media.gcs.prefix=bedrock" \
+              --set "image.repository=quay.io/presslabs/wordpress-bedrock-demo,image.tag=${CIRCLE_SHA1:0:6}" \
+              --set-file "media.gcs.google_credentials=google_credentials.json"
 
 workflows:
   version: 2
